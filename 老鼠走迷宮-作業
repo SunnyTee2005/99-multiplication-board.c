@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_N 10
+
+bool inMaze(int row, int column){
+    return (row>=0 && row<MAX_N-1 && column>=0 && column<MAX_N-1);
+}
+
+bool goMaze(int maze[MAX_N][MAX_N], int currentRow, int currentCol, int endRow, int endCol){
+    int moveRow[4] = {1, 0, -1, 0};
+    int moveCol[4] = {0, 1, 0, -1};
+    // Terminal condition
+    if(currentRow == endRow && currentCol == endCol)
+        return true;
+    for(int i; i<4; i++){
+        int nextRow = currentRow + moveRow[i];
+        int nextCol = currentCol + moveCol[i];
+        if(inMaze(nextRow,nextCol) && maze[nextRow][nextCol]==0){
+            maze[nextRow][nextCol] = 8; //8 indicates that mouse has passed this block before
+            //Recursive formula. (next step)
+            if(goMaze(maze, nextRow, nextCol, endRow, endCol))
+                return true;
+            maze[nextRow][nextCol] = 0;
+        }
+    }
+    return false;
+}
+
+int main(void){
+    int maze[MAX_N][MAX_N];
+
+    for(int i=0; i<MAX_N; i++)
+        for(int j=0; j<MAX_N; j++)
+            scanf("%d",&maze[i][j]);
+
+    //input start point
+    int startRow, startCol;
+    int endRow, endCol;
+    printf("Please enter the start coordinate:\n");
+    scanf("%d %d",&startRow,&startCol);
+    printf("Please enter the end coordinate:\n");
+    scanf("%d %d",&endRow, &endCol);
+    int step = 0;
+    goMaze(maze, startRow, startCol, endRow, endCol);
+
+    for(int i=0; i<MAX_N; i++)
+        for(int j=0; j<MAX_N; j++)
+            printf("%d",maze[i][j]);
+
+    return 0;
+}
